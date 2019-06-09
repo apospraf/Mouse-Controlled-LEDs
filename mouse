@@ -11,62 +11,51 @@ def set_A(x):
 	y = round(x*220/451)
 	if y>220:
 		y=220
-	return 255-y
+	return 220-y
 	
 def set_B(x):
 	y = abs(x-225)
-	y = round(y*220/902)
+	y = round(y*220/676)
 	if y>220:
 		y=220
-	return round(220-y*1.5)
+	return 220-y
 
 def set_C(x):
 	y = abs(x-451)
 	y = round(y*220/902)
 	if y>220:
 		y=220
-	return round(220-y)
+	return round(220-y*1.5)
 	
 def set_D(x):
-	y = round(x*220/902)
+	y = abs(x-676)
+	y = round(y*220/676)
 	if y>220:
 		y=220
 	return 220-y
 
-def set_E(x):
-	y = round(x*220/902)
+def set_E(x):	
+	if x<451:
+		x=451
+	y = round((x-451)*220/451)
 	if y>220:
 		y=220
 	return y
 	
 	
 def on_move(x, y): 
-		
-	# y1 = round(y*0.2827)
-	
 	if y<0:
 		y=0
 	
-	print("{0} {1} {2}".format(set_A(y), set_B(y), set_C(y)))
-	sent = struct.pack('>3B', set_A(y), set_B(y), set_C(y))
+	print("{0} {1} {2} {3} {4}".format(set_A(y), set_B(y), set_C(y), set_D(y), set_E(y)))
+	sent = struct.pack('>5B', set_A(y), set_B(y), set_C(y), set_D(y), set_E(y))
 	s.write(sent)
-	# print(sent)
-	if (x==0 and y==-2) or (x==-2 and y==0):		
-		s.close()
-		return False
 
 def on_click(x, y, button, pressed):
 	if button.name=='left' and pressed:
-		print("{0} {1} {2}".format(set_A(y), set_B(y), set_C(y)))
-		#sent = struct.pack('>3B', set_A(y), set_B(y), set_C(y))
-		#s.write(sent)
+		s.close()
+		return False
 			
-def on_scroll(x, y, dx, dy):
-	print("Mouse scrolled")
-	if dy==1:
-		s.write(b'1')
-	else:
-		s.write(b'0')
-
-with Listener(on_move=on_move, on_scroll=on_scroll, on_click=on_click) as listener:
+with Listener(on_move=on_move, on_click=on_click) as listener:
 	listener.join()
+	
